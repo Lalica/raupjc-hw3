@@ -1,4 +1,3 @@
-using System;
 
 namespace zad2.Models
 {

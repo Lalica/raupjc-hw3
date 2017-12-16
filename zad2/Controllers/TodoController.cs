@@ -26,7 +26,7 @@ namespace zad2.Controllers
             ApplicationUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
             List<TodoItem> activeTodoItems = _repository.GetCompleted(new Guid(currentUser.Id));
 
-            ActiveTodoViewModel model = new ActiveTodoViewModel();
+            IndexViewModel model = new IndexViewModel();
             foreach (TodoItem item in activeTodoItems)
             {
                 model.Items.Add(new TodoViewModel(item.Id, item.Text, item.DateCreated, item.DateCompleted, item.IsCompleted));

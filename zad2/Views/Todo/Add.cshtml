@@ -1,0 +1,21 @@
+﻿@model AddTodoViewModel
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Add todo item</title>
+
+</head>
+<body>
+    <h1> Add new Todo</h1>
+    <div>
+        <form asp-action="AddTodo" method="post">
+            Text: <input asp-for="Text" /> <span asp-validation-for="Text"></span> <br />
+            Date due: <input asp-for="DateDue.Date" /> <span asp-validation-for="DateDue.Date"></span> <br />
+            <input type="submit" />
+        </form>
+        <br />
+    </div>
+</body>
+</html>

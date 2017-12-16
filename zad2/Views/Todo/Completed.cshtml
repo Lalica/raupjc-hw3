@@ -1,0 +1,44 @@
+﻿@model zad2.Models.CompletedTodoViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>
+        @{
+            ViewData["Title"] = "Completed";
+        }
+    </title>
+</head>
+<body>
+<h2><strong>Completed Todo</strong></h2>
+
+<p>
+    <a asp-area="" asp-action="Index">See Active todo</a>
+</p>
+
+@if (Model.Items.Count() != 0)
+{
+    foreach (var todo in Model.Items)
+    {
+        <hr />
+        <h4><strong>@todo.Text</strong></h4>
+        <p>
+            <h5>Date created: @todo.DateCreated</h5>
+            <h5> Date completed: @todo.DateCompleted</h5>
+            <h5>Date due: @todo.DateDue</h5>
+        </p>
+
+    }
+
+}
+else
+{
+    <hr />
+    <h4>There are no completed todos.</h4>
+
+}
+
+
+</body>
+</html>

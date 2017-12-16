@@ -1,0 +1,43 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using zad2.Models.TodoViewModels
+@model zad2.Models.ActiveTodoViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>
+        @{
+            ViewData["Title"] = "Active";
+        }
+    </title>
+</head>
+<body>
+<h2><strong>Active Todo</strong></h2>
+
+<p>
+    <a asp-action="Add">Add new todo</a>  
+    <a asp-action="Completed">See completed todos</a>
+</p>
+
+@if (Model.Items.Count() != 0)
+{
+    foreach (var todo in Model.Items)
+    {
+        <hr />
+        <h4><strong>@todo.Text</strong>@if( todo.DaysLeft < 3) {<p>(za @todo.DaysLeft dan/a!)</p>}</h4>
+        <h4>Date due: @todo.DateDue</h4>
+        <p>
+            <h4>@todo.DateCreated</h4>
+            <a asp-action="MarkAsCompleted" asp-route-id="@todo.Id"><strong>Mark as completed</strong></a>
+        </p>
+    }
+}
+else
+{
+    <hr />
+    <h4>There is no active todos.</h4>
+
+}
+</body>
+</html>

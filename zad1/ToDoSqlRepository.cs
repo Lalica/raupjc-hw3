@@ -12,21 +12,10 @@ namespace zad1
 
         public TodoSqlRepository(TodoDbContext context)
         {
-            _context = context; 
+            _context = context;
         }
 
-        public TodoItem Get(Guid todoId, Guid userId)
-        {
-            using (_context)
-            {
-                if (!_context.ToDoItems.Any(i => i.Id == todoId && i.UserId == userId))
-                {
-                    throw new TodoAccessDeniedException("User: " + userId + " doesn't have permission to view item: " + todoId);
-                }
-                if(_context.ToDoItems.Any(i => i.UserId == userId)) return _context.ToDoItems.First(i => i.UserId == userId);
-                return null;
-            }
-        }
+
 
         public void Add(TodoItem todoItem)
         {
@@ -34,14 +23,81 @@ namespace zad1
             {
                 if (todoItem == null)
                 {
-                    return;
+                    throw new ArgumentNullException();
                 }
-                if (_context.ToDoItems.Any(i => i.Id == todoItem.Id))
+                if (_context.ToDoItems.Any(t => t.Id == todoItem.Id))
                 {
                     throw new DuplicateTodoItemException("Duplicate id: " + todoItem.Id);
                 }
                 _context.ToDoItems.Add(todoItem);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
+            }
+        }
+
+
+        public TodoItem Get(Guid todoId, Guid userId)
+        {
+            using (_context)
+            {
+                return InternalGet(todoId, userId);
+            }
+        }
+
+        public List<TodoItem> GetActive(Guid userId)
+        {
+            using (_context)
+            {
+                return _context.ToDoItems.Where(t => !t.IsCompleted && t.UserId == userId).ToList();
+
+            }
+        }
+
+        public List<TodoItem> GetAll(Guid userId)
+        {
+            using (_context)
+            {
+                return _context.ToDoItems.Where(t => t.UserId == userId).OrderByDescending(t => t.DateCreated).ToList();
+
+            }
+        }
+
+        public List<TodoItem> GetCompleted(Guid userId)
+        {
+            using (_context)
+            {
+                return _context.ToDoItems.Where(t => t.IsCompleted && t.UserId == userId).ToList();
+
+            }
+        }
+
+        public List<TodoItem> GetFiltered(Func<TodoItem, bool> filterFunction, Guid userId)
+        {
+            using (_context)
+            {
+                return _context.ToDoItems.Where(t => t.UserId == userId).Where(t => filterFunction(t)).ToList();
+
+            }
+        }
+
+        public bool MarkAsCompleted(Guid todoId, Guid userId)
+        {
+            using (_context)
+            {
+                // throws a TodoAccesDeniedException
+                TodoItem item = InternalGet(todoId, userId);
+
+                if (item == null)
+                {
+                    return false;
+                }
+                _context.ToDoItems.Remove(item);
+                _context.SaveChanges();
+
+                item.IsCompleted = true;
+                item.DateCompleted = DateTime.Now;
+                _context.ToDoItems.Add(item);
+                _context.SaveChanges();
+                return true;
             }
         }
 
@@ -49,14 +105,14 @@ namespace zad1
         {
             using (_context)
             {
-                TodoItem itemToRemove = Get(todoId, userId);
-                if (itemToRemove == null)
+                // throws a TodoAccesDeniedException
+                TodoItem item = InternalGet(todoId, userId);
+                if (item == null)
                 {
                     return false;
                 }
-
-                _context.ToDoItems.Remove(itemToRemove);
-                _context.SaveChangesAsync();
+                _context.ToDoItems.Remove(item);
+                _context.SaveChanges();
                 return true;
             }
         }
@@ -65,57 +121,36 @@ namespace zad1
         {
             using (_context)
             {
-                if (!_context.ToDoItems.Any(i => i.Id == todoItem.Id && i.UserId == userId))
+                // throws a TodoAccesDeniedException
+                TodoItem item = InternalGet(todoItem.Id, userId);
+                if (item != null)
                 {
-                    throw new TodoAccessDeniedException("User: " + userId + " doesn't have permission to view item: " + todoItem.Id);
+                    _context.ToDoItems.Remove(item);
+                    _context.SaveChanges();
+
+                    item.DateCompleted = todoItem.DateCompleted;
+                    item.DateCreated = todoItem.DateCreated;
+                    item.IsCompleted = todoItem.IsCompleted;
+                    item.Text = todoItem.Text;
+                    item.UserId = userId;
                 }
-                _context.ToDoItems.AddOrUpdate(todoItem);
-                _context.SaveChangesAsync();
+                _context.ToDoItems.Add(item);
+                _context.SaveChanges();
             }
         }
 
-        public bool MarkAsCompleted(Guid todoId, Guid userId)
+        private TodoItem InternalGet(Guid todoId, Guid userId)
         {
-            TodoItem oldItem = Get(todoId, userId);
-            if (oldItem == null)
+            List<TodoItem> list = _context.ToDoItems.Where(t => t.Id == todoId).ToList();
+            if (list == null || list.Count() == 0)
             {
-                return false;
+                return null;
             }
-            bool b = oldItem.MarkAsCompleted();
-            Update(oldItem, userId);
-            return b;
-        }
-
-        public List<TodoItem> GetAll(Guid userId)
-        {
-            using (_context)
+            if (list.Select(t => t.UserId == userId).Count() == 0)
             {
-               return _context.ToDoItems.Where(i => i.UserId == userId).OrderByDescending( m => m.DateCreated).ToList();
+                throw new TodoAccessDeniedException("User " + userId + " is not owner of the TodoItem!");
             }
-        }
-
-        public List<TodoItem> GetActive(Guid userId)
-        {
-            using (_context)
-            {
-                return _context.ToDoItems.Where(i => !i.IsCompleted && i.UserId == userId).ToList();
-            }
-        }
-
-        public List<TodoItem> GetCompleted(Guid userId)
-        {
-            using (_context)
-            {
-                return _context.ToDoItems.Where(i => i.IsCompleted && i.UserId == userId).ToList();
-            }
-        }
-
-        public List<TodoItem> GetFiltered(Func<TodoItem, bool> filterFunction, Guid userId)
-        {
-            using (_context)
-            {
-                return _context.ToDoItems.Where(filterFunction).Where(i => i.UserId == userId).ToList();
-            }
+            return _context.ToDoItems.FirstOrDefault(t => t.Id == todoId);
         }
     }
 }

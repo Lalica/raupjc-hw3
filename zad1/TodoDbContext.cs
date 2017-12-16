@@ -10,7 +10,6 @@ namespace zad1
 
         public TodoDbContext(string cnnstr) : base(cnnstr)
         {
-
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

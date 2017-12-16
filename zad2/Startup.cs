@@ -6,8 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using zad2.Data;
 using zad2.Models;
-using zad2.Models.TodoViewModels;
 using zad2.Services;
+using zad1.from_last_homework;
+using zad1;
 
 namespace zad2
 {

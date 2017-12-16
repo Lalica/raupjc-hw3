@@ -36,6 +36,7 @@ namespace zad1.from_last_homework
             if (!IsCompleted)
             {
                 DateCompleted = DateTime.Now;
+                IsCompleted = true;
                 return true;
             }
             return false;

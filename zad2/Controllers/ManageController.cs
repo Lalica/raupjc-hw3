@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -8,10 +9,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using zad2.Models;
 using zad2.Models.ManageViewModels;
 using zad2.Services;
-using IndexViewModel = zad2.Models.ManageViewModels.IndexViewModel;
 
 namespace zad2.Controllers
 {

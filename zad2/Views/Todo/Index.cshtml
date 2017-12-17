@@ -22,16 +22,16 @@
         {
             <hr />
             <h4><strong>@todo.Text</strong> @if(todo.DaysLeft < 3 && todo.DaysLeft > 0) { <small class="text-danger">(Only @todo.DaysLeft day(s) left!)</small> }</h4>
-            @if (todo.Labels!=null)
+            if (todo.Labels!=null)
             {
                 labels = "Les Labelles: ";
-                @foreach (var label in todo.Labels)
+                foreach (var label in todo.Labels)
                 {
                     labels += label.Value + ", ";
                 }
                 labels = labels.Substring(0, labels.Length-2);
             }
-            <h10>@labels</h10>
+            <h5>@labels</h5>
             <p>
                 <h5>Created on: @todo.DateCreated</h5>
                 @if (todo.DateDue != null)

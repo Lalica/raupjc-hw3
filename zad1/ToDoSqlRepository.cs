@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Migrations;
 using System.Linq;
 using zad1.from_last_homework;
 
@@ -35,12 +34,21 @@ namespace zad1
 
         public TodoItem Get(Guid todoId, Guid userId)
         {
-            return InternalGet(todoId, userId);
+            List<TodoItem> list = _context.ToDoItems.Where(t => t.Id == todoId).Include(l => l.Labels).ToList();
+            if (!list.Any())
+            {
+                return null;
+            }
+            if (list.All(t => t.UserId != userId))
+            {
+                throw new TodoAccessDeniedException("User " + userId + " is not owner of the TodoItem!");
+            }
+            return _context.ToDoItems.FirstOrDefault(t => t.Id == todoId);
         }
 
         public List<TodoItem> GetActive(Guid userId)
         {
-            return _context.ToDoItems.Where(t => !t.IsCompleted && t.UserId == userId).Include(y => y.Labels).ToList();
+            return _context.ToDoItems.Where(t => !t.IsCompleted && t.UserId == userId).Include(l => l.Labels).ToList();
         }
 
         public List<TodoItem> GetAll(Guid userId)
@@ -60,25 +68,19 @@ namespace zad1
 
         public bool MarkAsCompleted(Guid todoId, Guid userId)
         {
-            TodoItem item = InternalGet(todoId, userId);
-
-            if (item == null)
+            TodoItem oldItem = Get(todoId, userId);
+            if (oldItem == null)
             {
                 return false;
             }
-            _context.ToDoItems.Remove(item);
-            _context.SaveChanges();
-
-            item.IsCompleted = true;
-            item.DateCompleted = DateTime.Now;
-            _context.ToDoItems.Add(item);
-            _context.SaveChanges();
-            return true;
+            bool b = oldItem.MarkAsCompleted();
+            Update(oldItem, userId);
+            return b;
         }
 
         public bool Remove(Guid todoId, Guid userId)
         {
-            TodoItem item = InternalGet(todoId, userId);
+            TodoItem item = Get(todoId, userId);
             if (item == null)
             {
                 return false;
@@ -90,7 +92,7 @@ namespace zad1
 
         public void Update(TodoItem todoItem, Guid userId)
         {
-            TodoItem item = InternalGet(todoItem.Id, userId);
+            TodoItem item = Get(todoItem.Id, userId);
             if (item != null)
             {
                 _context.ToDoItems.Remove(item);
@@ -98,26 +100,14 @@ namespace zad1
 
                 item.DateCompleted = todoItem.DateCompleted;
                 item.DateCreated = todoItem.DateCreated;
+                item.DateDue = todoItem.DateDue;
                 item.IsCompleted = todoItem.IsCompleted;
                 item.Text = todoItem.Text;
                 item.UserId = userId;
+                item.Labels = todoItem.Labels;
             }
             _context.ToDoItems.Add(item);
             _context.SaveChanges();
-        }
-
-        private TodoItem InternalGet(Guid todoId, Guid userId)
-        {
-            List<TodoItem> list = _context.ToDoItems.Where(t => t.Id == todoId).ToList();
-            if (list == null || !list.Any())
-            {
-                return null;
-            }
-            if (!list.Select(t => t.UserId == userId).Any())
-            {
-                throw new TodoAccessDeniedException("User " + userId + " is not owner of the TodoItem!");
-            }
-            return _context.ToDoItems.FirstOrDefault(t => t.Id == todoId);
         }
 
         public void AddLabel(TodoItem item, string text)

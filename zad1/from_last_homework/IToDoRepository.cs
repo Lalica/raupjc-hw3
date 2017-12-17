@@ -19,7 +19,7 @@ namespace zad1.from_last_homework
         /// method should throw DuplicateTodoItemException with the message "duplicate id: {id}". 
         /// </summary> 
         void Add(TodoItem todoItem);
-        
+
 
         /// <summary> 
         /// Tries to remove a TodoItem with given id from the database. 
@@ -52,7 +52,7 @@ namespace zad1.from_last_homework
         /// <summary >
         /// Gets all TodoItem objects in the database for user, sorted by date created (descending )
         /// </summary >
-        List<TodoItem> GetAll (Guid userId) ;
+        List<TodoItem> GetAll(Guid userId);
 
         /// <summary >
         /// Gets all incomplete TodoItem objects in the database for user
@@ -69,8 +69,6 @@ namespace zad1.from_last_homework
         /// </summary >
         List<TodoItem> GetFiltered(Func<TodoItem, bool> filterFunction, Guid userId);
 
-        TodoItemLabel GetLabel(string text);
-
-        void AddItemToLabel(TodoItem item, TodoItemLabel label);
+        void AddLabel(TodoItem item, string text);
     }
 }

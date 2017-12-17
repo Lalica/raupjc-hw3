@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using zad1.from_last_homework;
@@ -153,20 +154,25 @@ namespace zad1
             return _context.ToDoItems.FirstOrDefault(t => t.Id == todoId);
         }
 
-        public TodoItemLabel GetLabel(string text)
+        public void AddLabel(TodoItem item, string text)
         {
             using (_context)
             {
-                TodoItemLabel label = _context.TodoItemLabels.FirstOrDefault(l => l.Value.ToLower() == text.ToLower());
-                return label;
-            }
-        }
-
-        public void AddItemToLabel(TodoItem item, TodoItemLabel label)
-        {
-            using (_context)
-            {
-                _context.TodoItemLabels.First(l => l.Value.ToLower().Equals(label.Value.ToLower())).LabelTodoItems.Add(item);
+                TodoItemLabel label;
+                if (_context.TodoItemLabels.Any(l => l.Value.ToLower().Equals(text.ToLower())))
+                {
+                    label = _context.TodoItemLabels.First(l => l.Value.ToLower().Equals(text.ToLower()));
+                }
+                else
+                {
+                    label = new TodoItemLabel(text);
+                    _context.TodoItemLabels.Add(label);
+                }
+                if (!item.Labels.Any(l => l.Value.ToLower().Equals(text.ToLower())))
+                {
+                    item.Labels.Add(label);
+                }
+                _context.SaveChanges();
             }
         }
     }

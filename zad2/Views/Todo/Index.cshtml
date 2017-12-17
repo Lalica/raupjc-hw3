@@ -10,7 +10,7 @@
     </title>
 </head>
 <body>
-    <h2><strong>Active Todo</strong></h2>
+    <h2><strong>Active Todos</strong></h2>
     <p>
         <a asp-action="Add">Add new todo</a>
         <a asp-action="Completed">See completed todos</a>
@@ -20,12 +20,14 @@
         foreach (var todo in Model.Items)
         {
             <hr />
-            <h4><strong>@todo.Text</strong>(Only @todo.DaysLeft days left!)</h4>
+            <h4><strong>@todo.Text</strong> @if(todo.DaysLeft < 3 && todo.DaysLeft > 0) { <small class="text-danger">(Only @todo.DaysLeft day(s) left!)</small> }</h4>
             <p>
-                <h4>Created on: @todo.DateCreated</h4>
-                <h4>Due to: @todo.DateDue</h4>
-                    
-
+                <h5>Created on: @todo.DateCreated</h5>
+                @if(todo.DateDue != null)
+                {
+                    <h5>Due to: @todo.DateDue</h5>
+                }
+                
                 <a asp-action="MarkAsCompleted" asp-route-id="@todo.Id"><strong>Mark as completed</strong></a>
             </p>
 

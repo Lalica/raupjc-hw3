@@ -11,6 +11,6 @@ namespace zad2.Models
         [Display(Name = "Labels")]
         public string Label { get; set; }
         [Display(Name = "Date due")]
-        public DateTime DateDue { get; set; }
+        public DateTime? DateDue { get; set; }
     }
 }

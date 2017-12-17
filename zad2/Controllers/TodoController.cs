@@ -86,34 +86,17 @@ namespace zad2.Controllers
                 }
                 try
                 {
+                    item.DateDue = model.DateDue;
                     if (model.Label != null)
                     {
-                        char[] separator = { ',' };
+                        string[] separator = { ", ", "," };
                         string[] labels = model.Label.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                         foreach (string l in labels)
                         {
-                            label = _repository.GetLabel(l);
-                            if (label == null)
-                            {
-                                label = new TodoItemLabel(l);
-                                label.LabelTodoItems.Add(item);
-                            }
-                            else
-                            {
-                                _repository.AddItemToLabel(item, label);
-                            }
-                            item.Labels.Add(label);
+                            _repository.AddLabel(item, l);
                         }
                     }
                     
-                }
-                catch (Exception ex)
-                {
-                    return View("Error");
-                }
-                try
-                {
-                    item.DateDue = model.DateDue;
                     _repository.Add(item);
                     return RedirectToAction("Index");
                 }

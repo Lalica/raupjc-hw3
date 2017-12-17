@@ -21,7 +21,10 @@
             <hr />
                 <h4><strong>@todo.Text</strong></h4>
                     <p>
-                        <h5>Date due: @todo.DateDue</h5>
+                        @if(todo.DateDue != null)
+                        {
+                            <h5>Due to: @todo.DateDue</h5>
+                        }
                         <h5>Date completed: @todo.DateCompleted</h5>
                         <a asp-action="RemoveFromCompleted" asp-route-id="@todo.Id"><strong>Remove from completed</strong></a>
                     </p>

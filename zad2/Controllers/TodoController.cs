@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using zad1.from_last_homework;
@@ -30,9 +31,16 @@ namespace zad2.Controllers
         {
             ApplicationUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
             List<TodoItem> todoItems;
+            TodoViewModel todoView;
+            IndexViewModel model = new IndexViewModel();
             try
             {
                 todoItems = _repository.GetActive(Guid.Parse(currentUser.Id));
+                foreach (TodoItem i in todoItems)
+                {
+                    todoView = new TodoViewModel(i);
+                    model.Items.Add(todoView);
+                }
             }
             catch (ArgumentNullException ignorable)
             {
@@ -42,7 +50,7 @@ namespace zad2.Controllers
             {
                 return View("Error");
             }
-            return View(todoItems);
+            return View(model);
         }
 
 
@@ -52,6 +60,7 @@ namespace zad2.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<IActionResult> Add(AddTodoViewModel model)
         {
@@ -59,6 +68,7 @@ namespace zad2.Controllers
             {
                 ApplicationUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
                 TodoItem item;
+                TodoItemLabel label;
 
                 try
                 {
@@ -74,9 +84,28 @@ namespace zad2.Controllers
                     //logger
                     return View("Error");
                 }
-
                 try
                 {
+                    char[] separator = {','};
+                    string[] labels = model.Label.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string l in labels)
+                    {
+                        label = _repository.GetLabel(l);
+                        if (label == null)
+                        {
+                            label = new TodoItemLabel(l);
+                        }
+                        _repository.AddItemToLabel(item, l);
+                        item.Labels.Add(label);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return View("Error");
+                }
+                try
+                {
+                    item.DateDue = model.DateDue;
                     _repository.Add(item);
                     return RedirectToAction("Index");
                 }
@@ -95,10 +124,16 @@ namespace zad2.Controllers
         {
             ApplicationUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
             List<TodoItem> todoItems;
-
+            TodoViewModel todoView;
+            CompletedViewModel model = new CompletedViewModel();
             try
             {
                 todoItems = _repository.GetCompleted(Guid.Parse(currentUser.Id));
+                foreach (TodoItem i in todoItems)
+                {
+                    todoView = new TodoViewModel(i);
+                    model.Items.Add(todoView);
+                }
             }
             catch (ArgumentNullException ignorable)
             {
@@ -108,9 +143,25 @@ namespace zad2.Controllers
             {
                 return View("Error");
             }
-            return View(todoItems);
+            return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> RemoveFromCompleted(Guid id)
+        {
+            ApplicationUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
+
+            try
+            {
+                _repository.Remove(id, Guid.Parse(currentUser.Id));
+            }
+            catch (TodoAccessDeniedException ex)
+            {
+                
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Completed");
+        }
 
         [HttpGet]
         public async Task<IActionResult> MarkAsCompleted(Guid Id)

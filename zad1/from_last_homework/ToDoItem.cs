@@ -29,6 +29,9 @@ namespace zad1.from_last_homework
         public bool IsCompleted { get; set; }
         public DateTime? DateCompleted { get; set; }
         public DateTime DateCreated { get; set; }
+        public Guid UserId { get; set; }
+        public List<TodoItemLabel> Labels { get; set; }
+        public DateTime? DateDue { get; set; }
 
 
         public bool MarkAsCompleted()
@@ -62,21 +65,6 @@ namespace zad1.from_last_homework
                 return Id.GetHashCode() * 397;
             }
         }
-
-        /// <summary>
-        /// User id that owns this TodoItem 
-        /// </summary>
-        public Guid UserId { get; set; }
-
-        /// <summary>
-        /// List of labels associated with TodoItem 
-        /// </summary> 
-        public List<TodoItemLabel> Labels { get; set; }
-
-        /// <summary> 
-        /// Date due. If null, no date was set by the user 
-        /// </summary> 
-        public DateTime? DateDue {get;set;}
     }
 
 

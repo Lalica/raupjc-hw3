@@ -68,5 +68,9 @@ namespace zad1.from_last_homework
         /// Gets all TodoItem objects in database for user that apply to the filter
         /// </summary >
         List<TodoItem> GetFiltered(Func<TodoItem, bool> filterFunction, Guid userId);
+
+        TodoItemLabel GetLabel(string text);
+
+        void AddItemToLabel(TodoItem item, string text);
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using zad2.Models;
 using zad2.Models.ManageViewModels;
 using zad2.Services;
+using IndexViewModel = zad2.Models.ManageViewModels.IndexViewModel;
 
 namespace zad2.Controllers
 {

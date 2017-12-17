@@ -142,15 +142,33 @@ namespace zad1
         private TodoItem InternalGet(Guid todoId, Guid userId)
         {
             List<TodoItem> list = _context.ToDoItems.Where(t => t.Id == todoId).ToList();
-            if (list == null || list.Count() == 0)
+            if (list == null || !list.Any())
             {
                 return null;
             }
-            if (list.Select(t => t.UserId == userId).Count() == 0)
+            if (!list.Select(t => t.UserId == userId).Any())
             {
                 throw new TodoAccessDeniedException("User " + userId + " is not owner of the TodoItem!");
             }
             return _context.ToDoItems.FirstOrDefault(t => t.Id == todoId);
+        }
+
+        public TodoItemLabel GetLabel(string text)
+        {
+            using (_context)
+            {
+                TodoItemLabel label = _context.TodoItemLabels.FirstOrDefault(l => l.Value.ToLower() == text.ToLower());
+                return label;
+            }
+        }
+
+        public void AddItemToLabel(TodoItem item, string text)
+        {
+            using (_context)
+            {
+                _context.TodoItemLabels.First(l => l.Value.ToLower() == text.ToLower()).LabelTodoItems.Add(item);
+                _context.SaveChanges();
+            }
         }
     }
 }

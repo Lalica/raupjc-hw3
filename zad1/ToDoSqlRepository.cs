@@ -162,12 +162,11 @@ namespace zad1
             }
         }
 
-        public void AddItemToLabel(TodoItem item, string text)
+        public void AddItemToLabel(TodoItem item, TodoItemLabel label)
         {
             using (_context)
             {
-                _context.TodoItemLabels.First(l => l.Value.ToLower() == text.ToLower()).LabelTodoItems.Add(item);
-                _context.SaveChanges();
+                _context.TodoItemLabels.First(l => l.Value.ToLower().Equals(label.Value.ToLower())).LabelTodoItems.Add(item);
             }
         }
     }

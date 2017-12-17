@@ -86,18 +86,26 @@ namespace zad2.Controllers
                 }
                 try
                 {
-                    char[] separator = {','};
-                    string[] labels = model.Label.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string l in labels)
+                    if (model.Label != null)
                     {
-                        label = _repository.GetLabel(l);
-                        if (label == null)
+                        char[] separator = { ',' };
+                        string[] labels = model.Label.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string l in labels)
                         {
-                            label = new TodoItemLabel(l);
+                            label = _repository.GetLabel(l);
+                            if (label == null)
+                            {
+                                label = new TodoItemLabel(l);
+                                label.LabelTodoItems.Add(item);
+                            }
+                            else
+                            {
+                                _repository.AddItemToLabel(item, label);
+                            }
+                            item.Labels.Add(label);
                         }
-                        _repository.AddItemToLabel(item, l);
-                        item.Labels.Add(label);
                     }
+                    
                 }
                 catch (Exception ex)
                 {

@@ -71,6 +71,6 @@ namespace zad1.from_last_homework
 
         TodoItemLabel GetLabel(string text);
 
-        void AddItemToLabel(TodoItem item, string text);
+        void AddItemToLabel(TodoItem item, TodoItemLabel label);
     }
 }

@@ -21,13 +21,13 @@
         {
             <hr />
             <h4><strong>@todo.Text</strong>(Only @todo.DaysLeft days left!)</h4>
-                <p>
-                    <h4>Created on: @todo.DateCreated</h4>
-                    <h4>Due to: @todo.DateDue</h4>
+            <p>
+                <h4>Created on: @todo.DateCreated</h4>
+                <h4>Due to: @todo.DateDue</h4>
                     
 
-                    <a asp-action="MarkAsCompleted" asp-route-id="@todo.Id"><strong>Mark as completed</strong></a>
-                </p>
+                <a asp-action="MarkAsCompleted" asp-route-id="@todo.Id"><strong>Mark as completed</strong></a>
+            </p>
 
         }
 

@@ -87,5 +87,10 @@ namespace zad1.from_last_homework
             Value = value;
             LabelTodoItems = new List<TodoItem>();
         }
+
+        public TodoItemLabel()
+        {
+            
+        }
     }
 }

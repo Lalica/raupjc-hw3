@@ -40,8 +40,7 @@ namespace zad1
 
         public List<TodoItem> GetActive(Guid userId)
         {
-            return _context.ToDoItems.Where(t => !t.IsCompleted && t.UserId == userId).ToList();
-
+            return _context.ToDoItems.Where(t => !t.IsCompleted && t.UserId == userId).Include(y => y.Labels).ToList();
         }
 
         public List<TodoItem> GetAll(Guid userId)

@@ -90,11 +90,10 @@ namespace zad2.Controllers
                     item.DateDue = model.DateDue;
                     if (model.Label != null)
                     {
-                        string[] separator = {", ", ","};
-                        string[] labels = model.Label.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                        string[] labels = model.Label.Split(',');
                         foreach (string l in labels)
                         {
-                           _repository.AddLabel(item, l);
+                           if(l.Trim() != "") _repository.AddLabel(item, l.Trim());
                         }
                     }
 

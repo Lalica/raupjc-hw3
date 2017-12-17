@@ -42,12 +42,14 @@ namespace zad2.Controllers
                     model.Items.Add(todoView);
                 }
             }
-            catch (ArgumentNullException ignorable)
+            catch (ArgumentNullException ex)
             {
+                _repository.AddError(ex.Message);
                 return View("Error");
             }
-            catch (FormatException ignorable)
+            catch (FormatException ex)
             {
+                _repository.AddError(ex.Message);
                 return View("Error");
             }
             return View(model);
@@ -68,7 +70,6 @@ namespace zad2.Controllers
             {
                 ApplicationUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
                 TodoItem item;
-                TodoItemLabel label;
 
                 try
                 {
@@ -76,12 +77,12 @@ namespace zad2.Controllers
                 }
                 catch (FormatException ex)
                 {
-                    // logger
+                    _repository.AddError(ex.Message);
                     return View("Error");
                 }
                 catch (ArgumentNullException ex)
                 {
-                    //logger
+                    _repository.AddError(ex.Message);
                     return View("Error");
                 }
                 try
@@ -89,20 +90,20 @@ namespace zad2.Controllers
                     item.DateDue = model.DateDue;
                     if (model.Label != null)
                     {
-                        string[] separator = { ", ", "," };
+                        string[] separator = {", ", ","};
                         string[] labels = model.Label.Split(separator, StringSplitOptions.RemoveEmptyEntries);
                         foreach (string l in labels)
                         {
-                            _repository.AddLabel(item, l);
+                           _repository.AddLabel(item, l);
                         }
                     }
-                    
+
                     _repository.Add(item);
                     return RedirectToAction("Index");
                 }
                 catch (DuplicateTodoItemException ex)
                 {
-                    // logger
+                    _repository.AddError(ex.Message);
                     return View();
                 }
 
@@ -126,12 +127,14 @@ namespace zad2.Controllers
                     model.Items.Add(todoView);
                 }
             }
-            catch (ArgumentNullException ignorable)
+            catch (ArgumentNullException ex)
             {
+                _repository.AddError(ex.Message);
                 return View("Error");
             }
-            catch (FormatException ignorable)
+            catch (FormatException ex)
             {
+                _repository.AddError(ex.Message);
                 return View("Error");
             }
             return View(model);
@@ -148,7 +151,7 @@ namespace zad2.Controllers
             }
             catch (TodoAccessDeniedException ex)
             {
-                
+                _repository.AddError(ex.Message);
                 return RedirectToAction("Index");
             }
             return RedirectToAction("Completed");
@@ -168,15 +171,17 @@ namespace zad2.Controllers
             }
             catch (TodoAccessDeniedException ex)
             {
-                // logger
+                _repository.AddError(ex.Message);
                 return RedirectToAction("Index");
             }
-            catch (ArgumentNullException ignorable)
+            catch (ArgumentNullException ex)
             {
+                _repository.AddError(ex.Message);
                 return View("Error");
             }
-            catch (FormatException ignorable)
+            catch (FormatException ex)
             {
+                _repository.AddError(ex.Message);
                 return View("Error");
             }
             return RedirectToAction("Index");

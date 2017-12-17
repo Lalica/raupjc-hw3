@@ -23,17 +23,17 @@
             </div>
         </div>
         <div class="form-group">
-            <p> Separate your labes using a comma.</p>
             <label asp-for="Label" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Label" class="form-control" />
+                <p> Separate your labes using a comma.</p>
+                <input asp-for="Label" class="form-control"/>
                 <span asp-validation-for="Label" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
             <label asp-for="DateDue" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="DateDue" asp-format="{dd/MM/yyyy}" />
+                <input asp-for="DateDue" type="datetime-local" />
                 <span asp-validation-for="DateDue"></span>
             </div>
         </div>

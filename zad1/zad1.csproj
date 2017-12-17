@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorLogs.cs" />
     <Compile Include="from_last_homework\DuplicateTodoItemException.cs" />
     <Compile Include="from_last_homework\IToDoRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

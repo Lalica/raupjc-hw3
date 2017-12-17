@@ -23,11 +23,12 @@
             <h4><strong>@todo.Text</strong> @if(todo.DaysLeft < 3 && todo.DaysLeft > 0) { <small class="text-danger">(Only @todo.DaysLeft day(s) left!)</small> }</h4>
             <p>
                 <h5>Created on: @todo.DateCreated</h5>
-                @if(todo.DateDue != null)
+                @if (todo.DateDue != null)
                 {
                     <h5>Due to: @todo.DateDue</h5>
                 }
                 
+
                 <a asp-action="MarkAsCompleted" asp-route-id="@todo.Id"><strong>Mark as completed</strong></a>
             </p>
 

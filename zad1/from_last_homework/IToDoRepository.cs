@@ -70,5 +70,7 @@ namespace zad1.from_last_homework
         List<TodoItem> GetFiltered(Func<TodoItem, bool> filterFunction, Guid userId);
 
         void AddLabel(TodoItem item, string text);
+
+        void AddError(string text);
     }
 }

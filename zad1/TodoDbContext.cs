@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using zad1.from_last_homework;
 
 namespace zad1
@@ -7,6 +8,7 @@ namespace zad1
     {
         public IDbSet<TodoItem> ToDoItems { get; set; }
         public IDbSet<TodoItemLabel> TodoItemLabels { get; set; }
+        public IDbSet<ErrorLogs> Errors { get; set; }
 
         public TodoDbContext(string cnnstr) : base(cnnstr)
         {
@@ -27,6 +29,9 @@ namespace zad1
             modelBuilder.Entity<TodoItemLabel>().HasKey(l => l.Id);
             modelBuilder.Entity<TodoItemLabel>().Property(i => i.Value).IsRequired();
             modelBuilder.Entity<TodoItemLabel>().HasMany(l => l.LabelTodoItems).WithMany(i => i.Labels);
+
+            modelBuilder.Entity<ErrorLogs>().HasKey(e => e.Id);
+            modelBuilder.Entity<ErrorLogs>().Property(e => e.Text).IsRequired();
         }
     }
 }

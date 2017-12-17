@@ -12,6 +12,8 @@ namespace zad2.Models
         [Required]
         public Guid Id { get; set; }
         [Required]
+        public Guid UserId {get; set; }
+        [Required]
         public bool IsCompleted { get; set; }
         [Required]
         public DateTime DateCreated { get; set; }
@@ -24,6 +26,7 @@ namespace zad2.Models
         {
             Text = item.Text;
             Id = item.Id;
+            UserId = item.UserId;
             IsCompleted = item.IsCompleted;
             DateCompleted = item.DateCompleted;
             DateCreated = item.DateCreated;
